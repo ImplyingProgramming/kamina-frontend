@@ -26,7 +26,7 @@
             make_thread() {
                 let thread_title = encodeURIComponent(this.title);
                 let thread_body = encodeURIComponent(this.body);
-                // TODO: Added image upload functionality, somehow
+                // TODO: Add image upload functionality, somehow
                 // let thread_media = this.media;
                 this.$http.post(
                     "http://127.0.0.1:1337/api/make_thread", {
