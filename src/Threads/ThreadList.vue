@@ -7,7 +7,6 @@
 </template>
 
 <script>
-    import nanoajax from "nanoajax"
     import Thread from "./Thread.vue"
 
     export default {
@@ -22,18 +21,15 @@
         },
         methods: {
             get_threads() {
-                nanoajax.ajax({url: "http://127.0.0.1:1337/api/get_threads"},
-                    (code, response) => {
-                        console.log(code);
-                        if (code !== 200) {
-                            console.error("There was a problem getting the threads");
-                            return;
-                        }
-                        let res = JSON.parse(response);
+                this.$http.get("http://127.0.0.1:1337/api/get_threads")
+                    .then(response => {
+                        let res = JSON.parse(response.bodyText);
                         for (let elem of res) {
                             this.threads.push(elem);
                         }
-                });
+                    }, error => {
+                        console.error("There was a problem getting the threads.");
+                    });
             }
         },
         mounted() {

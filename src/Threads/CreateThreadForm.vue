@@ -13,8 +13,6 @@
 </template>
 
 <script>
-    import nanoajax from "nanoajax"
-
     export default {
         name: "create-thread-form",
         data() {
@@ -26,21 +24,21 @@
         },
         methods: {
             make_thread() {
-                let thread_title = this.title;
-                let thread_body = this.body;
-                let thread_media = this.media;
-                nanoajax.ajax({
-                    url: "http://127.0.0.1:1337/api/make_thread",
-                    method: "POST",
-                    body: `title=${thread_title}&body=${thread_body}`
-                }, (code, response, request) => {
-                    console.log(code);
-                    if (code !== 200) {
-                        console.error("There was an error creating your thread");
-                    }
-                    // TODO: Redirect user to their thread (Needs vue-router)
-                    window.location.reload();
-                });
+                let thread_title = encodeURIComponent(this.title);
+                let thread_body = encodeURIComponent(this.body);
+                // TODO: Added image upload functionality, somehow
+                // let thread_media = this.media;
+                this.$http.post(
+                    "http://127.0.0.1:1337/api/make_thread", {
+                        title: thread_title,
+                        body: thread_body
+                    })
+                    .then(response => {
+                        // TODO: Redirect user to their thread (Needs vue-router)
+                        window.location.reload();
+                    }, error => {
+                        console.error("There was an error creating the thread");
+                    });
             }
         }
     }
