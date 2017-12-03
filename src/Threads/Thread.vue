@@ -1,7 +1,7 @@
 <template>
     <div class="thread">
         <p><strong>{{ data.title }}</strong> <span id="thread-id">{{ data.id }}</span></p>
-        <p>{{ data.body }}</p>
+        <div id="thread_body" v-html="parsed_body"></div>
     </div>
 </template>
 
@@ -13,6 +13,20 @@
         props: ["data"],
         components: {
             "responses": Response
+        },
+        data() {
+            return {
+                parsed_body: ""
+            }
+        },
+        mounted() {
+            this.parsed_body = this.nl2br(this.$props.data.body);
+        },
+        methods: {
+            nl2br(value) {
+                let break_tag = "<br/>";
+                return (value + ' ').replace(/(\r\n|\n\r|\r|\n)/g, break_tag + '$1')
+            }
         }
     }
 </script>
