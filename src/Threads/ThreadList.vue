@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-for="thread_data in threads">
-            <thread v-bind:data="thread_data"></thread>
+            <thread v-bind:thread_info="thread_data"></thread>
         </div>
     </div>
 </template>
