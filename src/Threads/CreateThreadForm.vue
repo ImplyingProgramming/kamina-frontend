@@ -19,33 +19,34 @@
             return {
                 title: "",
                 body: "",
-                image: new FormData()
+                image: new FormData(),
+                temp_image: undefined
             }
         },
         methods: {
             make_thread() {
-                let thread_title = encodeURIComponent(this.title);
-                let thread_body = encodeURIComponent(this.body);
-                // TODO: Add image upload functionality, somehow
+                let thread_title = this.title;
+                let thread_body = this.body;
                 let thread_image = this.image;
                 this.$http.post(
                     "http://127.0.0.1:1337/api/upload_image",
                     thread_image
-                ).then(response => {
-                    console.log(response.bodyText);
+                ).then(upload_image_response => {
+                    let img_json_hashes = JSON.parse(upload_image_response.bodyText);
+                    this.$http.post(
+                        "http://127.0.0.1:1337/api/make_thread", {
+                            title: thread_title,
+                            body: thread_body,
+                            image: img_json_hashes
+                        }
+                    ).then(thread_creation_response => {
+                        // TODO: Redirect user to their thread (Needs vue-router)
+                        window.location.reload();
+                    }, error => {
+                        console.error("There was an error creating the thread");
+                    });
                 }, error => {
-                    console.error("There was an error uploading the image");
-                });
-                this.$http.post(
-                    "http://127.0.0.1:1337/api/make_thread", {
-                        title: thread_title,
-                        body: thread_body
-                    }
-                ).then(response => {
-                    // TODO: Redirect user to their thread (Needs vue-router)
-                    // window.location.reload();
-                }, error => {
-                    console.error("There was an error creating the thread");
+                    console.error("There was a problem uploading the thread image");
                 });
             },
             bind_file(e) {

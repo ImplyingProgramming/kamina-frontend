@@ -1,6 +1,7 @@
 <template>
     <div class="thread">
-        <p><strong>{{ data.title }}</strong> <span id="thread-id">{{ data.id }}</span></p>
+        <img v-bind:src="image_src">
+        <p><strong>{{ thread_info.title }}</strong> <span id="thread-id">{{ thread_info.id }}</span></p>
         <div id="thread_body" v-html="parsed_body"></div>
     </div>
 </template>
@@ -10,17 +11,21 @@
 
     export default {
         name: "thread",
-        props: ["data"],
+        props: ["thread_info"],
         components: {
             "responses": Response
         },
         data() {
             return {
-                parsed_body: ""
+                parsed_body: "",
+                image: this.$props.thread_info.image ? this.$props.thread_info.image: "",
+                image_src: ""
             }
         },
         mounted() {
-            this.parsed_body = this.nl2br(this.$props.data.body);
+            this.parsed_body = this.nl2br(this.$props.thread_info.body);
+            this.image_src = `http://localhost:8080/ipfs/${this.image.thumbnail_hash}`;
+            console.log(this.image_src);
         },
         methods: {
             nl2br(value) {
