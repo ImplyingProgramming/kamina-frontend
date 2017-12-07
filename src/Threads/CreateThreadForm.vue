@@ -42,13 +42,14 @@
                     thread_upload_image
                 ).then(upload_image_response => {
                     // Now we have our image hashes
-                    let img_json_hashes = JSON.parse(upload_image_response.bodyText);
+                    let img_response = JSON.parse(upload_image_response.bodyText);
                     // Create the new thread
                     this.$http.post(
                         "http://127.0.0.1:1337/api/make_thread", {
                             thread_title: thread_title,
                             thread_content: thread_content,
-                            thread_image_hashes: img_json_hashes,
+                            thread_image_info: img_response[0],
+                            thread_image_hashes: img_response[1],
                             post_id: thread_id
                         }
                     ).then(thread_creation_response => {
@@ -63,7 +64,7 @@
             },
             bind_file(e) {
                 e.preventDefault();
-                this.thread_upload_image.append("file", e.target.files[0]);
+                this.thread_upload_image.set("file", e.target.files[0]);
             }
         }
     }
