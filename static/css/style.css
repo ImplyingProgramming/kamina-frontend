@@ -1,5 +1,9 @@
+body, html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 .container {
-    width: 800px;
+    width: 90%;
     margin: 0 auto;
     font-size: 0.8em;
 }
