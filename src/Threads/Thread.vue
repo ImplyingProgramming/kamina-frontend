@@ -1,8 +1,9 @@
 <template>
     <div class="thread">
-        <img v-bind:src="image_src">
-        <p><strong>{{ thread_info.title }}</strong> <span id="thread-id">{{ thread_info.id }}</span></p>
+        <img v-bind:src="image_src" v-bind:class="image_class" v-on:click="toggle_src_and_id">
+        <p><strong>{{ thread_info.title }}</strong> &nbsp;<span id="thread_id">>>{{ thread_info.response_id }}</span></p>
         <div id="thread_body" v-html="parsed_body"></div>
+        <div style="clear: both;"></div>
     </div>
 </template>
 
@@ -18,19 +19,32 @@
         data() {
             return {
                 parsed_body: "",
-                image: this.$props.thread_info.image ? this.$props.thread_info.image: "",
-                image_src: ""
+                image_hashes: this.$props.thread_info.image_hashes,
+                image_expanded: false,
+                image_src: "",
+                image_class: "thread_image_not_expanded"
             }
         },
         mounted() {
-            this.parsed_body = this.nl2br(this.$props.thread_info.body);
-            this.image_src = `http://localhost:8080/ipfs/${this.image.thumbnail_hash}`;
-            console.log(this.image_src);
+            this.parsed_body = this.nl2br(this.$props.thread_info.content);
+            this.image_src = `http://localhost:8080/ipfs/${this.image_hashes.thumbnail}`;
         },
         methods: {
             nl2br(value) {
                 let break_tag = "<br/>";
                 return (value + ' ').replace(/(\r\n|\n\r|\r|\n)/g, break_tag + '$1')
+            },
+            toggle_src_and_id() {
+                this.image_expanded = !this.image_expanded;
+                let hash = "";
+                if (!this.image_expanded) {
+                    hash = this.image_hashes.thumbnail;
+                    this.image_class = "thread_image_not_expanded";
+                } else {
+                    hash = this.image_hashes.original;
+                    this.image_class = "thread_image_expanded";
+                }
+                this.image_src = `http://localhost:8080/ipfs/${hash}`;
             }
         }
     }
@@ -49,7 +63,17 @@
         border: 1px solid #bebebe;
     }
 
-    #thread-id {
+    #thread_id {
         color: gray;
+    }
+
+    .thread_image_expanded {
+        max-width: 100%;
+    }
+
+    .thread_image_not_expanded {
+        float: left;
+        display: inline-block;
+        margin-right: 10px;
     }
 </style>
