@@ -2,10 +2,10 @@
     <!-- Use ajax for form submission -->
     <div id="cthread-form">
         <label for="cthread-title">Title: </label>
-        <input id="cthread-title" type="text" v-model="title">
+        <input id="cthread-title" type="text" v-model="thread_title">
         <br>
         <label for="cthread-body">Body:</label>
-        <br><textarea v-model="body" id="cthread-body" cols="30" rows="10"></textarea><br>
+        <br><textarea v-model="thread_content" id="cthread-body" cols="30" rows="10"></textarea><br>
         <label for="cthread-file">File:</label>
         <input accept="image/*" type="file" id="cthread-file" @change="bind_file"><br>
         <button v-on:click="make_thread">Create</button>
@@ -13,45 +13,57 @@
 </template>
 
 <script>
+    import uuid from "uuid"
+
     export default {
         name: "create-thread-form",
         data() {
             return {
-                title: "",
-                body: "",
-                image: new FormData(),
-                temp_image: undefined
+                thread_title: "",
+                thread_content: "",
+                thread_upload_image: new FormData()
             }
         },
         methods: {
             make_thread() {
-                let thread_title = this.title;
-                let thread_body = this.body;
-                let thread_image = this.image;
+                let thread_title = this.thread_title;
+                let thread_content = this.thread_content;
+                // We will actually use the thread_id internally
+                let thread_id = uuid.v4();
+                let thread_upload_image = this.thread_upload_image;
+                // Accept threads that don't have an image
+                if (thread_upload_image.file === undefined) {
+                    thread_upload_image.append("file", "");
+                }
+                thread_upload_image.append("post_id", thread_id);
+                // First upload the image
                 this.$http.post(
                     "http://127.0.0.1:1337/api/upload_image",
-                    thread_image
+                    thread_upload_image
                 ).then(upload_image_response => {
+                    // Now we have our image hashes
                     let img_json_hashes = JSON.parse(upload_image_response.bodyText);
+                    // Create the new thread
                     this.$http.post(
                         "http://127.0.0.1:1337/api/make_thread", {
-                            title: thread_title,
-                            body: thread_body,
-                            image: img_json_hashes
+                            thread_title: thread_title,
+                            thread_content: thread_content,
+                            thread_image_hashes: img_json_hashes,
+                            post_id: thread_id
                         }
                     ).then(thread_creation_response => {
                         // TODO: Redirect user to their thread (Needs vue-router)
                         window.location.reload();
-                    }, error => {
+                    }, thread_creation_error => {
                         console.error("There was an error creating the thread");
                     });
-                }, error => {
+                }, image_upload_error => {
                     console.error("There was a problem uploading the thread image");
                 });
             },
             bind_file(e) {
                 e.preventDefault();
-                this.image.append("file", e.target.files[0]);
+                this.thread_upload_image.append("file", e.target.files[0]);
             }
         }
     }
