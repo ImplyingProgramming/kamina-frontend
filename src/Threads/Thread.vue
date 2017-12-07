@@ -1,7 +1,18 @@
 <template>
     <div class="thread">
+        <div id="image_info">
+            File:
+            <a v-bind:href="image_href" target="_blank">
+                {{ thread_info["image_info"]["filename"] }}
+            </a>
+            ({{ image_size }},
+            {{ thread_info["image_info"]["dimensions"] }})
+        </div>
         <img v-bind:src="image_src" v-bind:class="image_class" v-on:click="toggle_src_and_id">
-        <p><strong>{{ thread_info.title }}</strong> &nbsp;<span id="thread_id">>>{{ thread_info.response_id }}</span></p>
+        <p>
+            <strong>{{ thread_info["title"] }}</strong>
+            <span id="thread_id">No. {{ thread_info["response_id"] }}</span>
+        </p>
         <div id="thread_body" v-html="parsed_body"></div>
         <div style="clear: both;"></div>
     </div>
@@ -12,22 +23,26 @@
 
     export default {
         name: "thread",
-        props: ["thread_info"],
+        props: ["thread"],
         components: {
             "responses": Response
         },
         data() {
             return {
                 parsed_body: "",
-                image_hashes: this.$props.thread_info.image_hashes,
+                thread_info: this.$props["thread"],
+                image_hashes: this.$props["thread"]["image_hashes"],
                 image_expanded: false,
                 image_src: "",
-                image_class: "thread_image_not_expanded"
+                image_class: "thread_image_not_expanded",
+                image_size: "",
+                image_href: `http://localhost:8080/ipfs/${this.$props["thread"]["image_hashes"]["original"]}`
             }
         },
         mounted() {
-            this.parsed_body = this.nl2br(this.$props.thread_info.content);
-            this.image_src = `http://localhost:8080/ipfs/${this.image_hashes.thumbnail}`;
+            this.parsed_body = this.nl2br(this.thread_info["content"]);
+            this.image_src = `http://localhost:8080/ipfs/${this.image_hashes["thumbnail"]}`;
+            this.image_size = `${parseInt(this.thread_info["image_info"]["size"])} KB`
         },
         methods: {
             nl2br(value) {
@@ -38,10 +53,10 @@
                 this.image_expanded = !this.image_expanded;
                 let hash = "";
                 if (!this.image_expanded) {
-                    hash = this.image_hashes.thumbnail;
+                    hash = this.image_hashes["thumbnail"];
                     this.image_class = "thread_image_not_expanded";
                 } else {
-                    hash = this.image_hashes.original;
+                    hash = this.image_hashes["original"];
                     this.image_class = "thread_image_expanded";
                 }
                 this.image_src = `http://localhost:8080/ipfs/${hash}`;
@@ -75,5 +90,9 @@
         float: left;
         display: inline-block;
         margin-right: 10px;
+    }
+
+    #image_info {
+        margin-bottom: 5px;
     }
 </style>
