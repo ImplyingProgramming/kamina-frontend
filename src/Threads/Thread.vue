@@ -1,19 +1,21 @@
 <template>
     <div class="thread">
-        <div id="image_info">
+        <div id="image-info">
             File:
-            <a v-bind:href="image_href" target="_blank">
-                {{ thread_info["image_info"]["filename"] }}
+            <a v-bind:href="image.href" target="_blank">
+                {{ threadInfo["image-info"]["filename"] }}
             </a>
-            ({{ image_size }},
-            {{ thread_info["image_info"]["dimensions"] }})
+            ({{ image.size }},
+            {{ threadInfo["image-info"]["dimensions"] }})
         </div>
-        <img v-bind:src="image_src" v-bind:class="image_class" v-on:click="toggle_src_and_id">
+        <img v-bind:src="image.src" v-bind:class="image.class" v-on:click="toggleSrcAndId">
         <p>
-            <strong>{{ thread_info["title"] }}</strong>
-            <span id="thread_id">No. {{ thread_info["response_id"] }}</span>
+            <strong>{{ threadInfo["title"] }}</strong>
+            <span id="thread-user">{{ threadInfo.user }}</span>
+            <span id="thread-date">{{ threadDate }}</span>
+            <span id="thread-id">No. {{ threadInfo["response-id"] }}</span>
         </p>
-        <div id="thread_body" v-html="parsed_body"></div>
+        <div id="thread-body" v-html="parsedBody"></div>
         <div style="clear: both;"></div>
     </div>
 </template>
@@ -29,37 +31,66 @@
         },
         data() {
             return {
-                parsed_body: "",
-                thread_info: this.$props["thread"],
-                image_hashes: this.$props["thread"]["image_hashes"],
-                image_expanded: false,
-                image_src: "",
-                image_class: "thread_image_not_expanded",
-                image_size: "",
-                image_href: `http://localhost:8080/ipfs/${this.$props["thread"]["image_hashes"]["original"]}`
+                parsedBody: "",
+                threadInfo: this.$props["thread"],
+                threadDate: "",
+                image: {
+                    hashes: this.$props["thread"]["image-hashes"],
+                    expanded: false,
+                    src: "",
+                    class: "thread-image-not-expanded",
+                    size: "",
+                    href: `http://localhost:8080/ipfs/${this.$props["thread"]["image-hashes"]["original"]}`
+                }
             }
         },
         mounted() {
-            this.parsed_body = this.nl2br(this.thread_info["content"]);
-            this.image_src = `http://localhost:8080/ipfs/${this.image_hashes["thumbnail"]}`;
-            this.image_size = `${parseInt(this.thread_info["image_info"]["size"])} KB`
+            this.parsedBody = this.nl2br(this.threadInfo["content"]);
+            this.image.src = `http://localhost:8080/ipfs/${this.image.hashes["thumbnail"]}`;
+            this.image.size = `${parseInt(this.threadInfo["image-info"]["size"])} KB`;
+            this.formatThreadDate();
         },
         methods: {
+            /**
+             * Handle line breaks in the thread body
+             * We could probably handle more styling
+             */
             nl2br(value) {
-                let break_tag = "<br/>";
-                return (value + ' ').replace(/(\r\n|\n\r|\r|\n)/g, break_tag + '$1')
+                let breakTag = "<br/>";
+                return (value + ' ').replace(/(\r\n|\n\r|\r|\n)/g, breakTag + '$1')
             },
-            toggle_src_and_id() {
-                this.image_expanded = !this.image_expanded;
+            /**
+             * Handle user click on the thread image
+             * Change the image thumbnail for the original one
+             */
+            toggleSrcAndId() {
+                this.image.expanded = !this.image.expanded;
                 let hash = "";
-                if (!this.image_expanded) {
-                    hash = this.image_hashes["thumbnail"];
-                    this.image_class = "thread_image_not_expanded";
+                if (!this.image.expanded) {
+                    hash = this.image.hashes["thumbnail"];
+                    this.image.class = "thread-image-not-expanded";
                 } else {
-                    hash = this.image_hashes["original"];
-                    this.image_class = "thread_image_expanded";
+                    hash = this.image.hashes["original"];
+                    this.image.class = "thread-image-expanded";
                 }
-                this.image_src = `http://localhost:8080/ipfs/${hash}`;
+                this.image.src = `http://localhost:8080/ipfs/${hash}`;
+            },
+            /**
+             * Set this.threadDate to a string with format
+             * mm/dd/yyyy(dayStr)hh:mm:ss
+             */
+            formatThreadDate() {
+                let date = new Date(this.threadInfo["date-created"]* 1000);
+                let dateOffset = date.getTimezoneOffset() / 60; // Is this really necessary
+                let dayStrings = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",];
+                this.threadDate =
+                    (date.getUTCMonth() + 1) + "/" +
+                    date.getUTCDate() + "/" +
+                    date.getUTCFullYear() + "(" +
+                    dayStrings[date.getUTCDay()] + ")" +
+                    (date.getUTCHours() - dateOffset) + ":" +
+                    date.getUTCMinutes() + ":" +
+                    date.getSeconds();
             }
         }
     }
@@ -78,21 +109,21 @@
         border: 1px solid #bebebe;
     }
 
-    #thread_id {
+    #thread-id {
         color: gray;
     }
 
-    .thread_image_expanded {
+    .thread-image-expanded {
         max-width: 100%;
     }
 
-    .thread_image_not_expanded {
+    .thread-image-not-expanded {
         float: left;
         display: inline-block;
         margin-right: 10px;
     }
 
-    #image_info {
+    #image-info {
         margin-bottom: 5px;
     }
 </style>
