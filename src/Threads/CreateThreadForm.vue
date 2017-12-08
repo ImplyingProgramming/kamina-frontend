@@ -62,6 +62,10 @@
                     console.error("There was a problem uploading the thread image");
                 });
             },
+            /**
+             * Handle image change on thread creation
+             * @param e Event
+             */
             bind_file(e) {
                 e.preventDefault();
                 this.thread_upload_image.set("file", e.target.files[0]);

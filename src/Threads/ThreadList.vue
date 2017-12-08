@@ -20,6 +20,9 @@
             "thread": Thread
         },
         methods: {
+            /**
+             * Get threads from the API
+             */
             get_threads() {
                 this.$http.get("http://127.0.0.1:1337/api/get_threads")
                     .then(response => {
