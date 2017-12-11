@@ -44,3 +44,6 @@ This will basically consume the backend's api. It is written with ES6 and VueJS.
 * Create a response to a thread
 * Post as a user-defined name
 * Don't allow other users to use that same name (optional)
+
+----
+In memory of Miguel Vesga
