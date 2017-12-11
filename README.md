@@ -1,6 +1,6 @@
 # Kamina.JS
 ![Kamina_Logo](kamina_logo.svg)  
-Kamina frontend written with VueJS
+The Kamina's frontend using Vue.js
 
 # What is Kamina?
 IPFS-based decentralized social networking platform
