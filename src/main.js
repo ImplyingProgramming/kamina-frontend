@@ -1,10 +1,21 @@
-import Vue from 'vue'
+import Vue from "vue"
+import App from "./App.vue"
+import ThreadView from "./Threads/View"
+
 import VueResource from "vue-resource"
-import App from './App.vue'
+import VueRouter from "vue-router"
 
 Vue.use(VueResource);
+Vue.use(VueRouter);
 
-new Vue({
-    el: '#app',
-    render: h => h(App)
+const router = new VueRouter({
+    routes: [
+        { path: "/", component: App },
+        { path: "/thread/:id", component: ThreadView }
+    ]
 });
+
+const app = new Vue({
+    router
+}).$mount("#app");
+
