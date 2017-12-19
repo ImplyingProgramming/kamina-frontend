@@ -9,8 +9,8 @@
 </template>
 
 <script>
-    import ThreadList from "./Threads/ThreadList.vue"
-    import CreateThreadForm from "./Threads/CreateThreadForm.vue"
+    import ThreadList from "./Threads/List.vue"
+    import CreateThreadForm from "./Threads/CreateForm.vue"
 
     export default {
         components: {
