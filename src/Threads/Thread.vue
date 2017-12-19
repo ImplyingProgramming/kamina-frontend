@@ -1,19 +1,22 @@
 <template>
     <div class="thread">
-        <div id="image-info">
-            File:
-            <a v-bind:href="image.href" target="_blank">
-                {{ threadInfo["image-info"]["filename"] }}
-            </a>
-            ({{ image.size }},
-            {{ threadInfo["image-info"]["dimensions"] }})
-        </div>
-        <img v-bind:src="image.src" v-bind:class="image.class" v-on:click="toggleSrcAndId">
+        <template v-if="Object.keys(this.threadInfo['image-info']).length !== 0">
+            <div id="image-info">
+                File:
+                <a :href="image.href" target="_blank">
+                    {{ threadInfo["image-info"]["filename"] }}
+                </a>
+                ({{ image.size }},
+                {{ threadInfo["image-info"]["dimensions"] }})
+            </div>
+            <img id="thread-image" :src="image.src" :class="image.class" @click="toggleSrcAndId">
+        </template>
         <p>
             <strong>{{ threadInfo["title"] }}</strong>
             <span id="thread-user">{{ threadInfo.user }}</span>
             <span id="thread-date">{{ threadDate }}</span>
-            <span id="thread-id">No. {{ threadInfo["response-id"] }}</span>
+            <span id="thread-id">No.{{ threadInfo["response-id"] }}</span>
+            <span>[<router-link :to="replyUrl">Reply</router-link>]</span>
         </p>
         <div id="thread-body" v-html="parsedBody"></div>
         <div style="clear: both;"></div>
@@ -41,7 +44,8 @@
                     class: "thread-image-not-expanded",
                     size: "",
                     href: `http://localhost:8080/ipfs/${this.$props["thread"]["image-hashes"]["original"]}`
-                }
+                },
+                replyUrl: `/thread/${this.$props["thread"]["response-id"]}`
             }
         },
         mounted() {
@@ -104,9 +108,8 @@
 
     .thread {
         margin-bottom: 15px;
-        padding: 5px;
-        background-color: #ebebeb;
-        border: 1px solid #bebebe;
+        padding: 10px;
+        border: 1px solid #e1e1e1;
     }
 
     #thread-id {
@@ -125,5 +128,9 @@
 
     #image-info {
         margin-bottom: 5px;
+    }
+
+    #thread-image {
+        cursor: pointer
     }
 </style>
