@@ -1,13 +1,13 @@
 <template>
     <div>
         <div v-for="thread_data in threads">
-            <thread v-bind:thread="thread_data"></thread>
+            <thread-summary :threadJson="thread_data"></thread-summary>
         </div>
     </div>
 </template>
 
 <script>
-    import Thread from "./Thread.vue"
+    import Thread from "./ThreadView.vue"
 
     export default {
         name: "thread-list",
@@ -17,7 +17,7 @@
             }
         },
         components: {
-            "thread": Thread
+            "thread-summary": Thread
         },
         methods: {
             /**
