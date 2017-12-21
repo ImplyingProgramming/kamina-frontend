@@ -1,6 +1,8 @@
 <template>
     <div>
-        <thread-view :threadJson="threadInfo"></thread-view>
+        <div v-for="threadInfo in threadData">
+            <thread-view :threadJson="threadInfo"></thread-view>
+        </div>
     </div>
 </template>
 
@@ -15,7 +17,7 @@
         data() {
             return {
                 threadId: this.$store.state.threadViewId,
-                threadInfo: {}
+                threadData: []
             }
         },
         mounted() {
@@ -23,7 +25,7 @@
             this.$http.get("http://127.0.0.1:1337/api/get_thread",
                 { params: { "post-id": this.threadId } })
                 .then(response => {
-                    this.threadInfo = JSON.parse(response.bodyText);
+                    this.threadData.push(JSON.parse(response.bodyText));
                 }, error => {
                     console.error(`There was a problem getting the thread information`);
                 });
