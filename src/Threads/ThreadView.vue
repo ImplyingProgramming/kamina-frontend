@@ -12,7 +12,7 @@
             <img id="thread-image" :src="image.src" :class="image.class" @click="toggleSrcAndId">
         </template>
         <p>
-            <strong>{{ threadInfo["title"] }}</strong>
+            <strong v-html="threadInfo['title']"></strong>
             <span id="thread-user">{{ threadInfo.user }}</span>
             <span id="thread-date">{{ threadDate }}</span>
             <span id="thread-id">No.{{ threadInfo["response-id"] }}</span>
