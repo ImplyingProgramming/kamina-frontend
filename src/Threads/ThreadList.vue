@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import Thread from "./ThreadView.vue"
+    import Thread from "../Threads/ThreadShow"
 
     export default {
         name: "thread-list",

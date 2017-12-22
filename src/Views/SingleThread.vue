@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import Thread from "./ThreadView";
+    import Thread from "../Threads/ThreadShow";
 
     export default {
         name: "view",
