@@ -1,6 +1,5 @@
 <template>
-    <div id="kamina" class="container">
-        <h1 id="board-title">{{ boardLetters }} - {{ boardTitle }}</h1>
+    <div id="kamina">
         <button v-on:click="toggle_thread_form">Make a new thread</button>
         <br><br>
         <cthread-form v-show="mkthread_btn_pressed"></cthread-form>
@@ -19,9 +18,7 @@
         },
         data() {
             return {
-                mkthread_btn_pressed: false,
-                boardLetters: "/>p/",
-                boardTitle: "Implying we can programming"
+                mkthread_btn_pressed: false
             }
         },
         methods: {
@@ -32,8 +29,6 @@
     }
 </script>
 
-<style scoped>
-    #board-title {
-        text-align: center;
-    }
+<style>
+
 </style>
