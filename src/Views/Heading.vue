@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <header>
         <h1 id="board-title">{{ boardLetters }} - {{ boardTitle }}</h1>
-    </div>
+    </header>
 </template>
 
 <script>

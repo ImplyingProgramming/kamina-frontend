@@ -1,10 +1,10 @@
 <template>
-    <div id="kamina">
+    <main>
         <button v-on:click="toggle_thread_form">Make a new thread</button>
         <br><br>
         <cthread-form v-show="mkthread_btn_pressed"></cthread-form>
         <thread-list></thread-list>
-    </div>
+    </main>
 </template>
 
 <script>
