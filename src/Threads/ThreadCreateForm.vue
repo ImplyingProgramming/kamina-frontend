@@ -1,14 +1,21 @@
 <template>
-    <!-- Use ajax for form submission -->
+    <!-- Use ajax for thread creation -->
     <div id="cthread-form">
-        <label for="cthread-title">Title: </label>
-        <input id="cthread-title" type="text" v-model="thread_title">
-        <br>
-        <label for="cthread-body">Body:</label>
-        <br><textarea v-model="thread_content" id="cthread-body" cols="30" rows="10"></textarea><br>
-        <label for="cthread-file">File:</label>
-        <input accept="image/*" type="file" id="cthread-file" @change="bind_file"><br>
-        <button v-on:click="make_thread">Create</button>
+        <form>
+            <p>
+                <label for="cthread-title">Title: </label>
+                <input id="cthread-title" type="text" v-model="thread_title">
+            </p>
+            <p>
+                <label for="cthread-body">Body:</label>
+                <textarea v-model="thread_content" id="cthread-body"></textarea>
+            </p>
+            <p>
+                <label for="cthread-file">File:</label>
+                <input accept="image/*" type="file" id="cthread-file" @change="bind_file">
+            </p>
+        </form>
+        <button v-on:click="make_thread">Post</button>
     </div>
 </template>
 
@@ -77,10 +84,41 @@
 <style scoped>
     #cthread-form {
         margin: 0 auto 10px auto;
-        width: 400px;
+        width: 300px;
+    }
+
+    form {
+        display: table;
+        border-collapse: separate;
+        border-spacing: 5px;
+    }
+
+    p {
+        display: table-row;
+        padding-bottom: 5px;
+    }
+
+    label {
+        display: table-cell;
+    }
+
+    input,
+    textarea {
+        display: table-cell;
+        width: 100%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
     }
 
     textarea {
         resize: none;
+        vertical-align: middle;
+        height: 150px;
+    }
+
+    button {
+        display: block;
+        margin: 0 auto;
     }
 </style>
