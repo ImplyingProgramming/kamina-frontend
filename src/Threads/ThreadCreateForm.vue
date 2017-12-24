@@ -112,7 +112,6 @@
     }
 
     textarea {
-        resize: none;
         vertical-align: middle;
         height: 150px;
     }
