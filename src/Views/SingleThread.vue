@@ -1,34 +1,24 @@
 <template>
     <div>
-        <div v-for="threadInfo in threadData">
-            <thread-view :threadJson="threadInfo"></thread-view>
-        </div>
+        <thread-view :threadJson="threadJson"></thread-view>
     </div>
 </template>
 
 <script>
-    import Thread from "../Threads/ThreadShow";
+    import ThreadSingleView from "../Threads/ThreadShow";
 
     export default {
         name: "view",
         components: {
-            "thread-view": Thread
+            "thread-view": ThreadSingleView
         },
         data() {
             return {
-                threadId: this.$store.state.threadViewId,
-                threadData: []
+                threadJson: this.$store.state.threadViewId
             }
         },
         mounted() {
-            // Get information of a single thread
-            this.$http.get("http://127.0.0.1:1337/api/get_thread",
-                { params: { "post-id": this.threadId } })
-                .then(response => {
-                    this.threadData.push(JSON.parse(response.bodyText));
-                }, error => {
-                    console.error(`There was a problem getting the thread information`);
-                });
+            // Get the responses of a thread (?
         }
     }
 </script>

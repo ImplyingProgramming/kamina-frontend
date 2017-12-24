@@ -99,7 +99,7 @@
                 this.image.src = `http://localhost:8080/ipfs/${hash}`;
             },
             updateThreadId() {
-                this.$store.commit("changeThreadViewId", this.threadInfo["post-id"]);
+                this.$store.commit("changeThreadViewJson", this.threadInfo);
             }
         }
     }

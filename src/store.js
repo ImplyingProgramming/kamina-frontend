@@ -5,11 +5,11 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        threadViewId: ""
+        threadViewJson: ""
     },
     mutations: {
-        changeThreadViewId(state, newId) {
-            state.threadViewId = newId;
+        changeThreadViewJson(state, newJson) {
+            state.threadViewId = newJson;
         }
     }
 });
