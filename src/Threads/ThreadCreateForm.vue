@@ -3,19 +3,23 @@
     <div id="cthread-form">
         <form>
             <p>
-                <label for="cthread-title">Title: </label>
-                <input id="cthread-title" type="text" v-model="thread_title">
+                <label for="cthread-title">Title:</label>
+                <input id="cthread-title" type="text" v-model="threadTitle">
+            </p>
+            <p>
+                <label for="cthread-user">Name:</label>
+                <input id="cthread-user" type="text" placeholder="Anonymous" v-model="threadUser">
             </p>
             <p>
                 <label for="cthread-body">Body:</label>
-                <textarea v-model="thread_content" id="cthread-body"></textarea>
+                <textarea v-model="threadContent" id="cthread-body"></textarea>
             </p>
             <p>
                 <label for="cthread-file">File:</label>
-                <input accept="image/*" type="file" id="cthread-file" @change="bind_file">
+                <input accept="image/*" type="file" id="cthread-file" @change="bindFile">
             </p>
         </form>
-        <button v-on:click="make_thread">Post</button>
+        <button v-on:click="makeThread">Post</button>
     </div>
 </template>
 
@@ -26,46 +30,49 @@
         name: "create-thread-form",
         data() {
             return {
-                thread_title: "",
-                thread_content: "",
-                thread_upload_image: new FormData()
+                threadTitle: "",
+                threadContent: "",
+                threadUser: "",
+                threadUploadImage: new FormData()
             }
         },
         methods: {
-            make_thread() {
-                let thread_title = this.thread_title;
-                let thread_content = this.thread_content;
+            makeThread() {
+                let threadTitle = this.threadTitle;
+                let threadContent = this.threadContent;
+                let threadUsername = this.threadUser;
                 // We will actually use the thread_id internally
-                let thread_id = uuid.v4();
-                let thread_upload_image = this.thread_upload_image;
+                let threadId = uuid.v4();
+                let threadUploadImage = this.threadUploadImage;
                 // Accept threads that don't have an image
-                if (thread_upload_image.file === undefined) {
-                    thread_upload_image.append("file", "");
+                if (threadUploadImage.file === undefined) {
+                    threadUploadImage.append("file", "");
                 }
-                thread_upload_image.append("post_id", thread_id);
+                threadUploadImage.append("post_id", threadId);
                 // First upload the image
                 this.$http.post(
                     "http://127.0.0.1:1337/api/upload_image",
-                    thread_upload_image
-                ).then(upload_image_response => {
+                    threadUploadImage
+                ).then(uploadImageResp => {
                     // Now we have our image hashes
-                    let img_response = JSON.parse(upload_image_response.bodyText);
+                    let imgResponse = JSON.parse(uploadImageResp.bodyText);
                     // Create the new thread
                     this.$http.post(
                         "http://127.0.0.1:1337/api/make_thread", {
-                            thread_title: thread_title,
-                            thread_content: thread_content,
-                            thread_image_info: img_response[0],
-                            thread_image_hashes: img_response[1],
-                            post_id: thread_id
+                            thread_title: threadTitle,
+                            thread_content: threadContent,
+                            thread_image_info: imgResponse[0],
+                            thread_image_hashes: imgResponse[1],
+                            thread_username: threadUsername,
+                            post_id: threadId
                         }
-                    ).then(thread_creation_response => {
+                    ).then(threadCreationResponse => {
                         // TODO: Redirect user to their thread (Needs vue-router)
                         window.location.reload();
-                    }, thread_creation_error => {
+                    }, threadCreationError => {
                         console.error("There was an error creating the thread");
                     });
-                }, image_upload_error => {
+                }, imageUploadError => {
                     console.error("There was a problem uploading the thread image");
                 });
             },
@@ -73,9 +80,9 @@
              * Handle image change on thread creation
              * @param e Event
              */
-            bind_file(e) {
+            bindFile(e) {
                 e.preventDefault();
-                this.thread_upload_image.set("file", e.target.files[0]);
+                this.threadUploadImage.set("file", e.target.files[0]);
             }
         }
     }
@@ -120,4 +127,4 @@
         display: block;
         margin: 0 auto;
     }
-</style>
+</style>+++++++
